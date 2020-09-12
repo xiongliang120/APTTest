@@ -30,6 +30,10 @@ public class BindViewProcessor extends AbstractProcessor {
     private Elements mElementUtils;
     private Map<String, ClassCreatorProxy> mProxyMap = new HashMap<>();
 
+    /**
+     * 初始化,可以得到ProcessingEnviroment, 该类提供了很多工具类 Elements,Types和Filer
+     * @param processingEnv
+     */
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
@@ -37,6 +41,10 @@ public class BindViewProcessor extends AbstractProcessor {
         mElementUtils = processingEnv.getElementUtils();
     }
 
+    /**
+     * 指定注解处理器是注册给哪个注解的, 这里说明是注解BindView
+     * @return
+     */
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         HashSet<String> supportTypes = new LinkedHashSet<>();
@@ -44,11 +52,21 @@ public class BindViewProcessor extends AbstractProcessor {
         return supportTypes;
     }
 
+    /**
+     * 指定使用的java 版本
+     * @return
+     */
     @Override
     public SourceVersion getSupportedSourceVersion() {
         return SourceVersion.latestSupported();
     }
 
+    /***
+     * 可以在这里写扫描, 评估和处理注解的代码，生成java文件
+     * @param set
+     * @param roundEnvironment
+     * @return
+     */
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         mMessager.printMessage(Diagnostic.Kind.NOTE, "processing...");
@@ -90,6 +108,7 @@ public class BindViewProcessor extends AbstractProcessor {
             JavaFile javaFile = JavaFile.builder(proxyInfo.getPackageName(), proxyInfo.generateJavaCode2()).build();
             try {
                 //　生成文件
+                System.out.println("生成文件");
                 javaFile.writeTo(processingEnv.getFiler());
             } catch (IOException e) {
                 e.printStackTrace();
